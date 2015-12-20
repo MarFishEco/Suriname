@@ -77,7 +77,6 @@ smoothFactor: 1,
 
 // add basemap and overlays
 var baseMaps = {
-
 	"Open Street Map": OSM,
 	"Imagery": imagery,
 	"Terrain": terrain,
