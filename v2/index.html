@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<title>Paramaribo-Wanica</title>
+<head>
+  <meta charset="utf-8" />
+
+  <!--jQuery UI stuff-->
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+  <!--Stylesheet-->
+  <link rel="stylesheet" href="inc/style.css" />
+  
+  <!--Custom JS-->
+  <script type="text/javascript" src="inc/initiators.js"></script>
+  
+  <meta name='viewport' content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <script src="https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js"></script>
+  <link href="https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css" rel="stylesheet" />
+
+  <!--Fonts-->
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"><!--FontAwesome-->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css"><!--Open Sans-->
+  
+  <script src="src/phases.js"></script>  
+  
+  <script>
+    $(function() {
+      $( "#dialog" ).dialog({
+	modal: true
+      });
+    });
+  </script>
+ 
+  <!--[if lte IE 8]>
+    <link href='http://api.tiles.mapbox.com/mapbox.js/v1.3.1/mapbox.ie.css' rel='stylesheet' >
+  <![endif]-->
+
+    <link rel="stylesheet" href="src/fullscreen.css" />
+  <!-- Leaflet Plugins -->
+  <link rel="stylesheet" href="src/Control.MiniMap.css" />
+  <script src="src/Control.MiniMap.js" type="text/javascript"></script>
+  
+  
+</head>
+
+<body>
+  <div id="dialog" title="Paramaribo-Wanica">
+      
+    <div class="note">
+      	<p>About the Project</p>
+	<p>Blah, Blah, ...</p>
+	<p>Yada, yada, yadah...</p>
+	<p><i>xxx</i></p>
+    </div><!--.note-->
+  </div><!--#dialog-->
+
+<div id='map-ui'>
+  <p><a class="switch" href="#">Quick Zoom</a></p>
+  <ul>
+	<li><a href='#' data-position1='5.89, -55.22'>Weg Nar Zee (west)</a></li>
+	<li><a href='#' data-position1='5.89, -55.15'>Kleidam (middle)</a></li>
+    <li><a href='#' data-position1='5.86, -55.09'>Riverdijke (east)</a></li>
+    <li><a href='#' data-position2='5.87, -55.17'>Greater Paramaribo</a></li>
+	</ul>
+</div>
+
+
+<div id='map'></div>
+
+<div id="info">
+  <abbr rel="tooltip" title="<p><b>Tip 1</b> xxx</p><p><b>Tip 2</b> xxx">i</abbr>
+</div><!--#info-->
+
+
+<div id='legend-content' style='display: none;'></div>
+
+<script type='text/javascript'>
+	// map settings
+	L.mapbox.accessToken = 'pk.eyJ1IjoiZ2VvaW50ZXJlc3QiLCJhIjoiQ2czbnlDMCJ9.pQ-_LxzHCL6WqMm5rJrEWw';
+	var map = L.mapbox.map('map', 'mapbox.streets', 
+	{ zoomControl: false }).setView([5.87, -55.17], 13);
+	map.options.maxZoom = 15;map.options.minZoom = 5;
+	map.legendControl.addLegend(document.getElementById('legend-content').innerHTML);
+	map.gridControl.options.follow = true;
+	new L.Control.Zoom({ position: 'topleft' }).addTo(map);
+	L.control.scale({ position: 'bottomleft' }).addTo(map);
+	  
+	L.control({ position: 'topleft' })
+	map.attributionControl.setPrefix('Mapping portal by <a href="mailto:gverutes@gmail.com" target="_top">Gregg Verutes</a>');
+	  
+
+	var OSM = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+	//var Terrain = L.tileLayer('http://a.tiles.mapbox.com/v3/mapbox.mapbox-warden/{z}/{x}/{y}.png');
+	
+
+	// define markers
+	var HinduTemple= L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/HinduTemple.png' ,
+				iconSize:     [17, 23] // size of the icon
+				//shadowSize:   [33, 31.5], // size of the shadow
+		}
+	 });
+	var HinduTemple = new HinduTemple(); 	
+	var GreenIcon= L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/marker-icon-greenLite.png' ,
+				iconSize:     [12.75, 21], // size of the icon
+				shadowSize:   [24.75, 31.5], // size of the shadow
+		}
+	 });
+	var GreenIcon = new GreenIcon(); 	
+	
+	// mini map
+  	var mapboxUrl='http://a.tiles.mapbox.com/v3/geointerest.map-dqz2pa8r/{z}/{x}/{y}.png';
+	var mb = new L.TileLayer(mapboxUrl, {minZoom: 0, maxZoom: 14});
+	var miniMap = new L.Control.MiniMap(mb, { toggleDisplay: true }).addTo(map); 	
+	
+	// add layers
+	L.control.layers({
+		'Streets & Terrain': L.mapbox.tileLayer('mapbox.streets').addTo(map),
+		'Topography': L.mapbox.tileLayer('geointerest.e4qjes5f'),
+		'Satellite': L.mapbox.tileLayer('geointerest.map-dqz2pa8r'),
+		'OpenStreetMap': OSM,
+	}, {
+	}, {position: 'topleft', collapsed: false}).addTo(map);
+	
+	// zoom levels for quick zooms
+	document.getElementById('map-ui').onclick = function(e) {
+    var pos = e.target.getAttribute('data-position1');	
+    if (pos) {
+        var loc = pos.split(',');
+        map.setView(loc, 14);
+    }
+	var pos = e.target.getAttribute('data-position2');
+    if (pos) {
+        var loc = pos.split(',');
+        map.setView(loc, 12);
+    }
+	}
+
+	// add scale bar and map attribution
+	L.control.scale({ position: 'topleft' }).addTo(map);
+	map.attributionControl.setPrefix('Viewer by Gregg Verutes');
+
+	// marker attributes
+	L.marker([5.903753, -55.226294], {icon: HinduTemple}).addTo(map).bindPopup("<h2>Hindu Temple</h2>The <b>Arya Dewaker temple</b> attracts many visitors, both Hindus and non-Hindus, coming from Suriname and from all over the world. The temple was officially opened on 11 February 2001.<p></p><img src='img/Arya_Dewaker.jpg'>");
+		
+	L.marker([5.903388889, -55.242000000], {icon: GreenIcon}).addTo(map).bindPopup("<h2>Vegetation Survey (Site 3)</h2><b>South of the Crematorium west of the road Oedraysing Varma weg which runs along the LVV canal</b><br>Dry swamp under tidal influence with tabaka tiki (<i>Acrosfichum aureum</i>) and Zeegras (<i>Batis maritime</i>), on the edges dying Black Mangrove / Parwa (<i>Avicennia germinans</i>) alternating with White mangrove /Akira/ (<i>Laguncularia racemosa</i>)<p></p><img src='img/VegSite3.jpg'>");	
+			
+	L.marker([5.907888889, -55.241888889], {icon: GreenIcon}).addTo(map).bindPopup("<h2>Vegetation Survey (Site 4)</h2><b>North of the sluice, east of the LVV canal and north of the Oedraysingh Varmaweg</b><br>Young upcoming White Mangrove / Akira (<i>Laguncularia racemosa</i>) and on the edges older Black Mangrove / Parwa (<i>Avicennia germinans</i>), and some Indian Blackberry / Jamun (<i>Syzygium cumini</i>) trees.  In the wet areas Ronde bies / Prapra Grasi (<i>Schoenoplectus lacustris</i>)<p></p><img src='img/VegSite4.jpg'>");	
+				
+	L.marker([5.905, -55.241888889], {icon: GreenIcon}).addTo(map).bindPopup("<h2>Vegetation Survey (Site 7)</h2><b>North of the Oedraysingh Varmaweg about 40m from the LVV canal</b><br>Open area, overgrown with young upcoming White Mangrove / Akira (<i>Laguncularia racemosa</i>) and in the northern parts a gallery of older Black Mangrove / Parwa trees (<i>Avicennia germinans</i>)<p></p><img src='img/VegSite7.jpg'>");	
+		
+	// create dyke annotation
+	var point1 = new L.LatLng(5.907604346374129, -55.246457284347564);
+	var point2 = new L.LatLng(5.910576883036494, -55.24603136064465);
+	var point3 = new L.LatLng(5.908865708352992, -55.24187208835096);
+	var point4 = new L.LatLng(5.902683854847079, -55.230181248855715);
+	var point5 = new L.LatLng(5.900817267670289, -55.22588580120406);
+	var point6 = new L.LatLng(5.8965575372424155, -55.21296243081905);
+	var point7 = new L.LatLng(5.895604392336976, -55.20396063140383);
+	var point8 = new L.LatLng(5.8936331958631065, -55.19103651001546);
+	var point9 = new L.LatLng(5.893452324657124, -55.17870548811539);
+	var point10 = new L.LatLng(5.893197284978731, -55.174598723722134);
+	var point11 = new L.LatLng(5.890299751193908, -55.17449188868829);
+	var pointList = [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10, point11];
+
+	var dyke = new L.polyline(pointList, {
+	color: '#542788',
+	weight: 5,
+	opacity: 1,
+	smoothFactor: 1,
+	});
+
+	dyke.addTo(map).bindPopup("Dike Phase 1");
+	
+	
+	
+    // set base style of vector data
+    function style(feature) {
+      return {
+        weight: 0,
+        fillOpacity: 0,
+        fillColor: '#ffff99'
+      };
+    }
+
+    // set hover colors
+    function highlightFeature(e) {
+      var layer = e.target;
+      layer.setStyle({
+        weight: 9,
+        opacity: 0.45,
+        color: '#ffff99', 
+        dashArray: '3',
+        fillOpacity: 0.25,
+        fillColor: '#FFF',
+      });
+    }
+
+    // a function to reset the colors when a neighborhood is not longer 'hovered'
+    function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+    }
+
+    // tell MapBox.js what functions to call when mousing over and out of a neighborhood
+    function onEachFeature(feature, layer) {
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight
+      });
+    }
+
+    // Add vector data to map
+    geojson = L.geoJson(phases, {
+      style: style,
+      onEachFeature: onEachFeature
+    }).addTo(map);
+
+
+</script>
+</body>
+</html>
