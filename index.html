@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<title>Paramaribo-Wanica</title>
+<head>
+  <meta charset="utf-8" />
+  <html lang="en">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+
+  <!--jQuery-->
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+  <!--Basic jQUery Slider-->
+  <link rel="stylesheet" href="css/bjqs.css">
+  <link rel="stylesheet" href="css/demo.css">
+  <script src="js/bjqs-1.3.min.js"></script>
+
+  <!--Stylesheet-->
+  <link rel="stylesheet" href="inc/style.css" />
+  
+  <!--Custom JS-->
+  <script type="text/javascript" src="inc/initiators.js"></script>
+  
+  <!--Mapbox API-->
+  <meta name='viewport' content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <link href="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css" rel="stylesheet" />
+  
+  <!--Fonts-->
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css"><!--Open Sans-->
+  
+  <!--Yellow AOI polygon-->
+  <script src="src/phases.js"></script>  
+  
+  <!--CartoDB SidePanel-->
+  <link rel="stylesheet" href="css/light-theme.css">
+  <link rel="stylesheet" href="css/makeitresponsive.css">
+  <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+  
+
+  <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.uncompressed.js">
+  </script>
+  <script src="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.standalone.js"></script>
+  
+  
+  <script>
+    $(function() {
+      $( "#dialog" ).dialog({
+	modal: true
+      });
+    });
+  </script>
+ 
+ 
+  <!--[if lte IE 8]>
+    <link href='http://api.tiles.mapbox.com/mapbox.js/v1.3.1/mapbox.ie.css' rel='stylesheet' >
+  <![endif]-->
+
+  <!-- Leaflet Plugins -->
+  <link rel="stylesheet" href="src/Control.MiniMap.css" />
+  <script src="src/Control.MiniMap.js" type="text/javascript"></script>
+  
+
+	<style>
+	body{
+		font: 62.5% "Trebuchet MS", sans-serif;
+	}
+	.demoHeaders {
+		margin-top: 1em;
+	}
+	#dialog-link {
+		padding: .4em 1em .4em 20px;
+		text-decoration: none;
+		position: relative;
+	}
+	#dialog-link span.ui-icon {
+		margin: 0 5px 0 0;
+		position: absolute;
+		left: .2em;
+		top: 50%;
+		margin-top: -8px;
+	}
+	#icons {
+		margin: 0;
+		padding: 0;
+	}
+	#icons li {
+		margin: 2px;
+		position: relative;
+		padding: 4px 0;
+		cursor: pointer;
+		float: left;
+		list-style: none;
+	}
+	#icons span.ui-icon {
+		float: left;
+		margin: 0 4px;
+	}
+	.fakewindowcontain .ui-widget-overlay {
+		position: absolute;
+	}
+	select 
+	{
+		width: 200px;
+	}
+	
+	#format
+	{
+		text-align: center;
+	}
+	</style>   
+  
+</head>
+
+<body>
+  <div id="dialog" title="PARAMARIBO-WANICA, SURINAME">
+    <div class="note">
+    <p><h2>Assessment of peri-urban<br>coastal protection options</h2></p>
+	Faced with growing intensity of human activities and climate change, coastal inhabitants seek a better understanding of how modifications to the biological and physical environment can affect their exposure to storm surge and flooding.</p>
+	<p></p>WWF Guianas, the Mangrove Forum and partners are compiling relevant information on the importance of mangroves and other coastal protection options, including sediment trapping units. These options may include building a permanent or semi-permanent dyke, designation of no-build or no-clearance areas for mangroves, or some combination (e.g., mixture of soft/engineered solutions).  It may also include the option to relocate coastal populations away from flood prone areas.
+	<img src="img/Logos4_sm.png">
+    </div><!--.note-->
+  </div><!--#dialog-->
+
+<div id='map-ui'>
+  <p><a class="switch" href="#">MAP ZOOM (+/-)</a></p>
+  <ul>
+	<li><a href='#west' data-position13='5.90, -55.193'>WEST</a></li>
+	<li><a href='#middle' data-position14='5.90, -55.13'>MIDDLE</a></li>
+    <li><a href='#east' data-position14='5.868, -55.10'>EAST</a></li>
+    <li><a href='#paramaribo' data-position12='5.87, -55.12'>Greater Paramaribo</a></li>
+	</ul>
+</div>
+
+
+<div id='map'></div>
+
+<div class="sidepanel">
+<!-- start Basic Jquery Slider -->
+<div id="banner-slide">
+	<ul class="bjqs">
+		<li><img src="img/1.jpg" title="Increasing urbanisation north of Paramaribo"></li>
+		<li><img src="img/2.jpg" title="Decreasing mangrove and swamp forest belt"></li>
+		<li><img src="img/3.jpg" title="Hindu shrine and temple"></li>
+		<li><img src="img/4.jpg" title="Hindu crematorium"></li>
+		<li><img src="img/5.jpg" title="Failing coastal protection - Weg naar Zee, Hindu crematorium"></li>
+		<li><img src="img/6.jpg" title="Failing coastal protection - Weg naar Zee, Hindu crematorium"></li>
+		<li><img src="img/7.jpg" title="Failing coastal protection - Weg naar Zee, west of Hindu shrine"></li>
+		<li><img src="img/8.jpg" title="Pilot sediment trapping unit - west of Hindu shrine"></li>
+		<li><img src="img/9.jpg" title="Pilot sediment trapping unit - west of Hindu shrine"></li>
+		<li><img src="img/10.jpg" title="Study area, July 2015"></li>		
+	</ul>
+</div>
+
+<!-- Accordion -->
+<h2 class="demoHeaders">&nbsp;&nbsp;<a href="#" title="Hint: Turn on the 'Engineered options' map before reviewing the different coastal protection options under consideration.">COASTAL PROTECTION OPTIONS</a></h2>
+<div id="accordion">
+	<h3>WEST</h3>
+	<div>
+	In Weg naar Zee, both engineered and nature-based options are being considered. Engineered options include a <span style='color:#662506'><b>kleidam</b> (earthen dyke)</span> and sediment trapping units*. Findings indicate that the proposed dyke will <u>not</u> protect the Hindu Temple. Mangrove enhancement is a more cost-effective solution as it generates a higher net-present value (290M US$) for a period of 25 years, in comparison to the earthen dyke protection scenario (104M US$). This enhancement involves establishing a setback with conditions to allow mangroves to recolonize.<br>*The role of sediment trapping units was not considered in this analysis.	
+	<a href="http://geointerest.frih.org/Suriname/docs/WRI_Report_ValuationCoastalProtectionParamariboSuriname.pdf#page=29" title="Click to read detailed findings for WEST subregion from the report" target="_blank"><img src="img/links_sm.png" align="right"></a>
+	<br><br>
+         <u>Water Height Analysis</u><img src="img/color_ramp.gif" align="right"><br>Modeled flood depth for year <input type="text" id="minval" size="1" style="border:0; color:#000; font-weight:bold;"> of mangrove enhancement
+      <div id="slider-5"></div>
+	</div>
+	<h3>MIDDLE</h3>
+	<div>
+	East of Weg naar Zee, behind the mangrove/swamp forest belt, both 1) the construction of a <span style='color:#cc4c02'><b>kleidam</b> (earthen dyke with rocks on the side)</span> and 2) the establishment of a setback to protect existing mangroves are being considered as coastal protection options. The mangroves in this area are currently healthy and expanding naturally. Building a dyke behind the mangroves would make little sense in either physical or economic terms. Mangrove enhancement generates a net-present value that is roughly 3 times that of a kleidam (154M versus 56M US$).<a href="http://geointerest.frih.org/Suriname/docs/WRI_Report_ValuationCoastalProtectionParamariboSuriname.pdf#page=30" title="Click to read detailed findings for MIDDLE subregion from the report" target="_blank"><img src="img/links_sm.png" align="right"></a>
+	</div>
+	<h3>EAST</h3>
+	<div>
+	Model results suggest that the construction of a <span style='color:#023858'><b>riverdijke</b> (sea wall)</span> is the appropriate option to protect the coastal area along the Suriname river, northeast of Paramaribo's Centrum ressort. Additional flooding might occur from the land-side during storms due to inadequate or clogged drainage. Due to the high commercial value of property in this area, the total avaoided damages due to the presence of a riverdijke is estimated to be between 0.87 and 1.2 billion US$.<a href="http://geointerest.frih.org/Suriname/docs/WRI_Report_ValuationCoastalProtectionParamariboSuriname.pdf#page=31" title="Click to read detailed findings for EAST subregion from the report" target="_blank"><img src="img/links_sm.png" align="right"></a></div>
+</div>
+
+<!-- Tabs -->
+<h2 class="demoHeaders">&nbsp;&nbsp;<a href="#" title="Hint: Click the link icons to see detailed findings from the final report.">ASSESSMENT STEPS</a></h2>
+<div id="tabs">
+	<ul>
+		<li><a href="#tabs-1">Data</a></li>
+		<li><a href="#tabs-2">Options</a></li>
+		<li><a href="#tabs-3">Shoreline Modeling</a></li>
+		<li><a href="#tabs-4">Valuation</a></li>
+		<li><a href="#tabs-5">Outreach</a></li>
+	</ul>
+	<div id="tabs-1"><img src="img/DataLayerStack.png" align="left"><b>Data</b> indicates the location of current environments and human activities and serve as a foundation for discussions of future plans. It also serves as inputs to shoreline model and visually depicts alternative options. Data include biophysical information such as elevation and coastline shape, maps of human activities, the distribution of coastal habitats, and socioeconomic data such as property values.<br><a href="http://geointerest.frih.org/Suriname/docs/WRI_Report_ValuationCoastalProtectionParamariboSuriname.pdf#page=7" title="Click to learn more about this 'Data' step" target="_blank"><img src="img/links_sm.png" align="right"></a><p></p></div>
+	<div id="tabs-2"><img src="img/Scenarios.png" align="left">Scenarios are simplified descriptions of possible futures, used to illuminate <b>options</b> and consequences. They are not predictions, but instead storylines of what the future could look like.<p></p>In this study, we evaluated potential engineered and nature-based options to examine how actions taken today may play out in the future. Scenario analysis helps uncover unintended tradeoffs or surprising "win-wins" that are otherwise difficult to imagine when many human activities and social, economic, and ecological objectives interact.<a href="http://geointerest.frih.org/Suriname/docs/WRI_Report_ValuationCoastalProtectionParamariboSuriname.pdf#page=14" title="Click to learn more about this 'Options/Scenarios' step" target="_blank"><img src="img/links_sm.png" align="right"></a><p></p></div>
+	<div id="tabs-3"><b>Shoreline modeling</b> quantifies how changes in ecosystems and socio-economic conditions under alternative future scenarios lead to changes in environmental condition, ecological function, and benefits to people.  We
+	<li>Identified vulnerable land and exisiting coastline protection</li>
+	<li>Estimated relative shoreline stability based on range of factors</li>
+	<li>Evaluated how much protection each scenario is offering</li>
+	<li>Examined protection over a 25-year period
+	<br>*Note: A water height analysis was also applied in the WEST region<a href="http://geointerest.frih.org/Suriname/docs/WRI_Report_ValuationCoastalProtectionParamariboSuriname.pdf#page=19" title="Click to learn more about this 'Shoreling Modeling' step" target="_blank"><img src="img/links_sm.png" align="right"></a></li>
+	<p></p></div>
+	<div id="tabs-4">The <b>valuation</b> approach consisted of two phases:
+	<li>Spatial (map-based) evaluation of the shoreline protection benefits provided by engineered and nature-based options</li>
+	<li>Evaluating the shoreline benefits in monetary terms through comparing the avoided economic damages due to the presence of alternative shoreline protection options and their respective costs.</li><a href="http://geointerest.frih.org/Suriname/docs/WRI_Report_ValuationCoastalProtectionParamariboSuriname.pdf#page=25" title="Click to learn more about this 'Valuation' step" target="_blank"><img src="img/links_sm.png" align="right"></a><p></p></div>
+	<div id="tabs-5"><img src="img/MangroveForum_logo.png" align="left"><b>Outreach</b> involves stakeholders and local experts to garner feedback and enhance transparency.<br>The <u>Mangrove Forum Suriname</u> is a key partner in this science-policy process of engagement as we seek to better understand what science and information is really needed to inform decision-making.<p></p></div>
+</div>
+
+</div> <!--close side panel-->
+
+<div id="info">
+  <abbr rel="tooltip" title="<p><h2>Assessment of peri-urban coastal protection options</h2></p>
+	<p>Faced with growing intensity of human activities and climate change, coastal inhabitants seek a better understanding of how modifications to the biological and physical environment can affect their exposure to storm surge and flooding.</p>
+	<p>WWF Guianas, the Mangrove Forum and partners are compiling relevant information on the importance of mangroves and other coastal protection options, including sediment trapping units. These options may include building a permanent or semi-permanent dyke, designation of no-build or no-clearance areas for mangroves, or some combination (e.g., mixture of soft/engineered solutions). It may also include the option to relocate coastal populations away from flood prone areas.</p><p>">i</abbr>
+</div>
+
+<div id='legend-content' style='display: none;'></div>
+
+<script type='text/javascript'>
+
+$(function() {
+	$( "#accordion").accordion({heightStyle: 'panel'});
+	$( "#tabs" ).tabs();
+    $( "#check" ).button();
+    $( "#format" ).buttonset();
+	$( "#tooltip" ).tooltip();
+	});
+
+jQuery(document).ready(function($) {
+  
+  $('#banner-slide').bjqs({
+    animtype      : 'slide',
+    height        : 300,
+    width         : 400,
+    responsive    : true,
+    randomstart   : true
+  });
+
+	var count = 0;
+  $( "#slider-5" ).slider({
+  	change: function(event, ui) { plotWater(ui.value);} ,
+	   orientation: "horizontal",
+	   value: 0,
+	   step:1,
+	   min: 0,
+       max: 25,
+	   slide: function( event, ui ){
+		$( "#minval" ).val( ui.value );
+	   }	
+	});
+	$( "#minval" ).val( $( "#slider-5" ).slider( "value" ) );
+ 
+ 
+ });
+
+ 
+	// map settings
+	L.mapbox.accessToken = 'pk.eyJ1IjoiZ2VvaW50ZXJlc3QiLCJhIjoiQ2czbnlDMCJ9.pQ-_LxzHCL6WqMm5rJrEWw';
+	var map = L.map('map', null)
+	.setView([5.91, -55.12], 12);
+	map.options.maxZoom = 15;map.options.minZoom = 8;
+	map.attributionControl.setPrefix('Mapping portal by <a href="mailto:gverutes@gmail.com" target="_top">Gregg Verutes</a>');
+	  
+	// OSM base map  
+	var OSM = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+	// create dyke/seawall annotations
+	var point1a = new L.LatLng(5.907604346374129, -55.246457284347564);
+	var point2a = new L.LatLng(5.910576883036494, -55.24603136064465);
+	var point3a = new L.LatLng(5.908865708352992, -55.24187208835096);
+	var point4a = new L.LatLng(5.902683854847079, -55.230181248855715);
+	var point5a = new L.LatLng(5.900817267670289, -55.22588580120406);
+	var point6a = new L.LatLng(5.8965575372424155, -55.21296243081905);
+	var point7a = new L.LatLng(5.895604392336976, -55.20396063140383);
+	var point8a = new L.LatLng(5.8936331958631065, -55.19103651001546);
+	var point9a = new L.LatLng(5.893452324657124, -55.17870548811539);
+	var point10a = new L.LatLng(5.893197284978731, -55.174598723722134);
+	var point11a = new L.LatLng(5.890299751193908, -55.17449188868829);
+	var pointListA = [point1a, point2a, point3a, point4a, point5a, point6a, point7a, point8a, point9a, point10a, point11a];
+
+	var dyke1 = new L.polyline(pointListA, {
+	color: '#662506',
+	weight: 5,
+	opacity: 1,
+	smoothFactor: 1,
+	}).bindPopup("likely location/extent of<br>kleidam (earthen dyke)");
+
+	var point1b = new L.LatLng(5.884601,-55.114029);
+	var point2b = new L.LatLng(5.87478,-55.120078);
+	var point3b = new L.LatLng(5.876738,-55.123427);
+	var point4b = new L.LatLng(5.873011,-55.125701);
+	var point5b = new L.LatLng(5.879582,-55.136063);
+	var point6b = new L.LatLng(5.8847,-55.144909);
+	var point7b = new L.LatLng(5.885521,-55.169298);
+	var point8b = new L.LatLng(5.877623,-55.179218);
+	var point9b = new L.LatLng(5.884005,-55.205377);
+	var pointListB = [point1b, point2b, point3b, point4b, point5b, point6b, point7b, point8b, point9b];	
+	
+	var setback = new L.polyline(pointListB, {
+	color: '#000',
+	weight: 2,
+	opacity: 1,
+	dashArray: '10',
+	smoothFactor: 1,
+	}).bindPopup("proposed setback line (Deltares)");
+	
+	var point1c = new L.LatLng(5.893197,-55.174599);
+	var point2c = new L.LatLng(5.883537,-55.114678);
+	var point3c = new L.LatLng(5.883537,-55.114678);
+	var point4c = new L.LatLng(5.884601,-55.114029);
+	
+	var pointListC = [point1c, point2c, point3c, point4c];	
+	
+	var dyke2 = new L.polyline(pointListC, {
+	color: '#cc4c02',
+	weight: 5,
+	opacity: 1,
+	smoothFactor: 1,
+	}).bindPopup("likely location/extent of<br>kleidam (clay dyke)");	
+	
+	var point1d = new L.LatLng(5.884599,-55.114031);
+	var point2d = new L.LatLng(5.884277,-55.113627);
+	var point3d = new L.LatLng(5.883754,-55.112918);
+	var point4d = new L.LatLng(5.883011,-55.111989);
+	var point5d = new L.LatLng(5.882133,-55.110959);
+	var point6d = new L.LatLng(5.881289,-55.109963);
+	var point7d = new L.LatLng(5.880513,-55.108984);
+	var point8d = new L.LatLng(5.879753,-55.108005);	
+	var point9d = new L.LatLng(5.878841,-55.106908);	
+	var point10d = new L.LatLng(5.87825,-55.106249);	
+	var point11d = new L.LatLng(5.877575,-55.105439);	
+	var point12d = new L.LatLng(5.876714,-55.104578);	
+	var point13d = new L.LatLng(5.875735,-55.10343);	
+	var point14d = new L.LatLng(5.874604,-55.102147);	
+	var point15d = new L.LatLng(5.874452,-55.101742);	
+	var point16d = new L.LatLng(5.874351,-55.10132);	
+	var point17d = new L.LatLng(5.873726,-55.100577);	
+	var point18d = new L.LatLng(5.872494,-55.099868);	
+	var point19d = new L.LatLng(5.871751,-55.099513);	
+	var point20d = new L.LatLng(5.870856,-55.099057);	
+	var point21d = new L.LatLng(5.869792,-55.098652);	
+	var point22d = new L.LatLng(5.869404,-55.098365);	
+	var point23d = new L.LatLng(5.868813,-55.098264);	
+	var point24d = new L.LatLng(5.867648,-55.098433);	
+	var point25d = new L.LatLng(5.866871,-55.098722);	
+	
+	var pointListD = [point1d, point2d, point3d, point4d, point5d, point6d, point7d, point8d, point9d, point10d, point11d, point12d, point13d, point14d, point15d, point16d, point17d, point18d, point19d, point20d, point21d, point22d, point23d, point24d, point25d];	
+	
+	var seawall = new L.polyline(pointListD, {
+	color: '#023858',
+	weight: 5,
+	opacity: 1,
+	smoothFactor: 1,
+	}).bindPopup("likely location/extent of<br>riverdijke (river dyke)");	
+	
+	// sediment trapping units
+	var circle = L.circle([5.9024, -55.2249], 100, {
+		color: 'white',
+		fillColor: '#ffff00',
+		fillOpacity: 0.75
+	}).bindPopup("<img src='img/STUs.png'><p></p>Pilot location: Four sediment trapping units (STUs) to be implemented");	
+	
+	var hydro_road = L.mapbox.tileLayer('geointerest.0a026823');
+    var lulc_base = L.mapbox.tileLayer('geointerest.Suriname_lulc');
+	var LULC = L.layerGroup([lulc_base, hydro_road]);
+	var STUs = L.mapbox.tileLayer('geointerest.Suriname_STUs');
+	var ES = L.layerGroup([circle, dyke1, dyke2, setback, seawall, STUs]);
+	
+	// define markers
+	var HinduTemple= L.Icon.Default.extend({
+		options: {
+		iconUrl: 'img/HinduTemple.png' ,
+		iconSize:     [17, 23], // size of the icon
+		iconAnchor:   [12, 25], // point of the icon which will correspond to marker's location
+		}
+	 });
+	var HinduTemple = new HinduTemple(); 
+	
+	var GreenIcon= L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/marker-icon-greenLite.png' ,
+				iconSize:     [12.75, 21], // size of the icon
+				shadowSize:   [24.75, 31.5], // size of the shadow
+		}
+	 });
+	var GreenIcon = new GreenIcon(); 	
+	
+	// mini map
+  	var mapboxUrl='http://a.tiles.mapbox.com/v3/geointerest.map-dqz2pa8r/{z}/{x}/{y}.png';
+	var mb = new L.TileLayer(mapboxUrl, {minZoom: 8, maxZoom: 15});
+	var miniMap = new L.Control.MiniMap(mb, { toggleDisplay: true }).addTo(map); 	
+	
+	
+	// add layers
+	L.control.layers({
+		'Streets & Hydro': L.mapbox.tileLayer('mapbox.streets').addTo(map),
+		'Topography': L.mapbox.tileLayer('geointerest.e4qjes5f'),
+		'Imagery': L.mapbox.tileLayer('geointerest.map-dqz2pa8r'),
+		'OpenStreetMap': OSM
+	}, { 
+	'Mangroves': L.mapbox.tileLayer('geointerest.Suriname_mangrove').addTo(map),
+	'Land use / cover': LULC,
+	'Engineered options': ES,
+	'Study area': L.mapbox.tileLayer('geointerest.Suriname_protectsheds').addTo(map), 
+	}, {position: 'topleft', collapsed: false}).addTo(map);
+	
+	// zoom levels for quick zooms
+	document.getElementById('map-ui').onclick = function(e) {
+    var pos = e.target.getAttribute('data-position14');	
+    if (pos) {
+        var loc = pos.split(',');
+        map.setView(loc, 14);
+		
+    }
+	var pos = e.target.getAttribute('data-position13');
+    if (pos) {
+        var loc = pos.split(',');
+        map.setView(loc, 13);
+    }
+	var pos = e.target.getAttribute('data-position12');
+    if (pos) {
+        var loc = pos.split(',');
+        map.setView(loc, 11);
+    }
+	}
+
+	// add scale bar and map attribution
+	L.control.scale({ position: 'topleft' }).addTo(map);
+	map.attributionControl.setPrefix('Viewer by: Gregg Verutes');
+	var Suriname_lulc = L.mapbox.gridLayer('geointerest.Suriname_lulc');
+	map.addLayer(Suriname_lulc);
+	map.addControl(L.mapbox.gridControl(Suriname_lulc, {follow: true}));
+	
+	// marker attributes
+	L.marker([5.903753, -55.226294], {icon: HinduTemple}).addTo(map).bindPopup("<img src='img/HinduShrine.jpg'><p></p>Marker showing the location of the <b>Hindu Shrine</b>");
+	
+	
+	// extend the default marker class
+	 var greenIcon = L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/marker-icon-green.png' ,
+				iconSize:     [28.5, 29.25], // size of the icon
+				iconAnchor:   [10, 20],
+		}
+	 });
+
+	 var blackIcon = L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/marker-icon-black.png' ,
+				iconSize:     [28.5, 29.25], // size of the icon
+				iconAnchor:   [10, 20],
+		}
+	 });
+
+	 var blueIcon = L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/marker-icon-blue.png' ,
+				iconSize:     [28.5, 29.25], // size of the icon
+				iconAnchor:   [10, 20],
+		}
+	 });
+
+
+	 var pinkIcon = L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/marker-icon-pink.png' ,
+				iconSize:     [28.5, 29.25], // size of the icon
+				iconAnchor:   [10, 20],
+		}
+	 });
+
+	 var orangeIcon = L.Icon.Default.extend({
+		options: {
+				iconUrl: 'img/marker-icon-orange.png' ,
+				iconSize:     [28.5, 29.25], // size of the icon
+				iconAnchor:   [10, 20],
+		}
+	 });
+
+	 var greenIcon = new greenIcon();
+	 greenIcon.options.shadowSize = [0,0];
+	 var blackIcon = new blackIcon(); 
+	  blackIcon.options.shadowSize = [0,0];
+	 var blueIcon = new blueIcon();
+	  blueIcon.options.shadowSize = [0,0];
+	 var orangeIcon = new orangeIcon();
+	  orangeIcon.options.shadowSize = [0,0];
+	 var pinkIcon = new pinkIcon(); 
+	  pinkIcon.options.shadowSize = [0,0];
+
+		 
+	L.marker([5.909792, -55.241804], {icon: greenIcon}).addTo(map).bindPopup("<h1>1</h1>xxx");
+	L.marker([5.903218, -55.227902], {icon: blackIcon}).addTo(map).bindPopup("<h1>1</h1>xxx");	
+	L.marker([5.9024, -55.2249], {icon: blueIcon}).addTo(map).bindPopup("<h1>1</h1>xxx");	
+	L.marker([5.858478, -55.202396], {icon: orangeIcon}).addTo(map).bindPopup("<h1>1</h1>xxx");
+	L.marker([5.885450, -55.131753], {icon: pinkIcon}).addTo(map).bindPopup("<h1>1</h1>xxx");	
+		
+	// var LULC = L.layerGroup([lulc_base, hydro_road]);
+
+    // set base style of vector protection shed
+    function style(feature) {
+      return {
+        weight: 0,
+        fillOpacity: 0,
+        fillColor: '#ffff99'
+      };
+    }
+
+    // set hover colors
+    function highlightFeature(e) {
+      var layer = e.target;
+      layer.setStyle({
+        weight: 9,
+        opacity: 0.45,
+        color: '#ffff99', 
+        dashArray: '3',
+        fillOpacity: 0.2,
+        fillColor: '#fff'
+      });
+    }
+
+    // a function to reset the colors when a neighborhood is not longer 'hovered'
+    function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+    }
+
+    // tell MapBox.js what functions to call when mousing over and out of a neighborhood
+    function onEachFeature(feature, layer) {
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight
+      });
+    }
+
+    // add vector data to map
+    geojson = L.geoJson(phases, {
+      style: style,
+      onEachFeature: onEachFeature
+    }).addTo(map);
+
+	map.on('zoomend', function(e) {
+    if (map.getZoom() >= 11) {map.removeLayer(geojson);}
+	}) ;
+	
+
+
+var sql = new cartodb.SQL({ user: 'natcap' });
+		
+var layerUrl = 'https://natcap.cartodb.com/api/v2/viz/47b3aa9a-d9ef-11e5-b6ae-0e674067d321/viz.json';
+
+var sublayers = [];
+var count = 0;
+function plotWater(min){
+	
+	if (count > 0) {
+	sublayers[count-1].hide();
+	}
+	
+	var MapQuery = "";
+	var CartoCSS = "";
+	
+	if (min == 0){
+		MapQuery = MapQuery + "SELECT * FROM merge_5class WHERE cartodb_id = 1";
+		CartoCSS = CartoCSS + "#merge_5class{polygon-fill: #253494;polygon-opacity: 0;line-color: #FFF;line-width: 0;line-opacity: 0;}"
+	}
+	else if (min >= 1 && min < 5){
+		MapQuery = MapQuery + "SELECT * FROM merge_5class WHERE YEAR = 1"; 
+		CartoCSS = CartoCSS + "#merge_5class{polygon-fill: #253494;polygon-opacity: .75;line-color: #FFF;line-width: 0;line-opacity: 0;}#merge_5class [ _1yr_class = 1] {polygon-fill: #FFFFCC;}#merge_5class [ _1yr_class = 2] {polygon-fill: #A1DAB4;}#merge_5class [ _1yr_class = 3] {polygon-fill: #41B6C4;}#merge_5class [ _1yr_class = 4] {polygon-fill: #2C7FB8;}#merge_5class [ _1yr_class = 5] {polygon-fill: #253494;}"
+	}
+	else if (min >= 5 && min < 25){
+		MapQuery = MapQuery + "SELECT * FROM merge_5class WHERE YEAR = 5";
+		CartoCSS = CartoCSS + "#merge_5class{polygon-fill: #253494;polygon-opacity: .75;line-color: #FFF;line-width: 0;line-opacity: 0;}#merge_5class [ _5yr_class = 1] {polygon-fill: #FFFFCC;}#merge_5class [ _5yr_class = 2] {polygon-fill: #A1DAB4;}#merge_5class [ _5yr_class = 3] {polygon-fill: #41B6C4;}#merge_5class [ _5yr_class = 4] {polygon-fill: #2C7FB8;}#merge_5class [ _5yr_class = 5] {polygon-fill: #253494;}"
+	}
+	else {
+		MapQuery = MapQuery + "SELECT * FROM merge_5class WHERE YEAR = 25";
+		CartoCSS = CartoCSS + "#merge_5class{polygon-fill: #253494;polygon-opacity: .75;line-color: #FFF;line-width: 0;line-opacity: 0;}#merge_5class [ _25yr_class = 1] {polygon-fill: #FFFFCC;}#merge_5class [ _25yr_class = 2] {polygon-fill: #A1DAB4;}#merge_5class [ _25yr_class = 3] {polygon-fill: #41B6C4;}#merge_5class [ _25yr_class = 4] {polygon-fill: #2C7FB8;}#merge_5class [ _25yr_class = 5] {polygon-fill: #253494;}"
+	}
+
+
+	  cartodb.createLayer(map, layerUrl)
+	  .addTo(map)
+	  .on('done', function(layer) {
+		// change the query for the first layer
+		var subLayerOptions = {
+		  sql: MapQuery,
+		  cartocss: CartoCSS,
+		}
+		var sublayer = layer.getSubLayer(0);
+		sublayer.set(subLayerOptions);
+		sublayers.push(sublayer);
+		layer.setZIndex(12);
+		count = count + 1;
+	  }).on('error', function() {
+		// log the error
+	  });
+	
+}
+
+</script>
+</body>
+</html>
