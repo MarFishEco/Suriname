@@ -52,17 +52,17 @@ h4 {
 
 #tooltip
 {
-    text-align: center;
+    text-align: left;
     color: #000;
-    background: #FFF460;
+    background: #d3d3d3;
     position: absolute;
     z-index: 100;
-    padding: 15px;
-    margin-top: 10px;
-    border-left: 1px solid #d3d3d3;
-    border-right: 1px solid #d3d3d3;
-    border-top: 1px solid #d3d3d3;
-	border-bottom: 1px solid #d3d3d3;
+    padding: 50px;
+    margin-top: 5px;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
     
 }
  
@@ -122,10 +122,12 @@ h4 {
  /* Legend */
  .map-legend {
     /*display: none;*/
+
  }
  
  .map-legends {
     border: none !important;
+	
  }
  
     .my-legend .legend-title {
@@ -165,12 +167,11 @@ h4 {
       color: #777;
       }
     
-
  .map-legend {
 	 /*	max-width: 315px !important;
 		border:1px solid #000000;
 		background-color: #F0F0F0; */
-                display: none;
+       display: none;
 	  }
 	  
 	 .map-tooltip {
@@ -182,8 +183,8 @@ h4 {
 /* Zooms UI */
 	 #map-ui {
 		position:fixed;
-		bottom:15;
-		right:33.8%;
+		top:3px;
+		left:50px;
 		z-index:100;
 		}
 	 #map-ui ul {
@@ -196,19 +197,14 @@ h4 {
 	}
 	
 	 #map-ui a.switch {
-		min-width: 110px;
+		max-width: 75px;
 		font-size:12px;
-
-		
 		display:block;
-
 		text-decoration:none;
-
 		border: 1px solid #555;
 		-webkit-border-radius: 3px;
 		border-radius: 3px;
-		padding: 5px 25px 5px 10px;
-
+		padding: 5px 0px 5px 10px;
 		color: #555;
 
 		box-shadow: 1px 1px 3px rgba(50,50,50,0.3);
@@ -273,7 +269,6 @@ h4 {
 }
 	     
 /* ZOOM CONTROLS */
-
     .leaflet-bar, .leaflet-touch .leaflet-bar {
 	border: 1px solid #555 !important;
 	box-shadow: 1px 1px 3px rgba(50,50,50,0.3) !important;
@@ -288,7 +283,6 @@ h4 {
     }
 
 /* LAYERS */
-
 .leaflet-control-layers {
     box-shadow: 1px 1px 3px rgba(50,50,50,0.3)!important;
     background: #fff!important;
@@ -297,6 +291,9 @@ h4 {
 
     .leaflet-control-layers-expanded {
 	color: #555!important;
+	position: relative;
+	right: 475px;
+	margin-top: 12px !important;
     }
  
 /* SCALE */
